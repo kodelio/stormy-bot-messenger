@@ -7,7 +7,6 @@ var apiai = require('apiai');
 var https = require('https');
 var moment = require('moment');
 var cheerio = require('cheerio');
-var google = require('googleapis');
 var scraper = require('google-search-scraper');
 var FeedParser = require('feedparser');
 var app = apiai(process.env.API_AI);
@@ -43,7 +42,8 @@ login({ email: process.env.FB_LOGIN, password: process.env.FB_PW }, function cal
                 });
 
                 request.end();
-            } else if (message.body.toLowerCase().includes('/shortUrl')) {
+            } else if (message.body.includes('/shortUrl')) {
+                var google = require('googleapis');
                 var urlshortener = google.urlshortener('v1');
 
                 var params = {
@@ -59,7 +59,7 @@ login({ email: process.env.FB_LOGIN, password: process.env.FB_PW }, function cal
                         api.sendMessage('Short url -> ' + response.id, message.threadID);
                     }
                 });
-            } else if (message.body.toLowerCase().includes('/google')) {
+            } else if (message.body.includes('/google')) {
                 var options = {
                     query: message.body.replace('/google ', ''),
                     limit: 5,
@@ -76,13 +76,12 @@ login({ email: process.env.FB_LOGIN, password: process.env.FB_PW }, function cal
                         api.sendMessage(results[i], message.threadID);
                     }
                 });
-            } else if (message.body.toLowerCase().includes('/t411')) {
+            } else if (message.body.includes('/t411')) {
                 var request = require('request');
-                if (message.body.toLowerCase() === "/t411 series") {
+                if (message.body === "/t411 series") {
                     var req = request('https://www.t411.ai/rss/?cat=433');
-                } else if (message.body.toLowerCase() === "/t411 animes") {
+                } else if (message.body === "/t411 animes") {
                     var req = request('https://www.t411.ai/rss/?cat=637');
-                } else if (message.body.toLowerCase() === "/t411 films") {
                     var req = request('https://www.t411.ai/rss/?cat=631');
                 }
 
