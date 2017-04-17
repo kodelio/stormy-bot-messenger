@@ -11,10 +11,10 @@ var scraper = require('google-search-scraper');
 var FeedParser = require('feedparser');
 var app = apiai(process.env.API_AI);
 
-login({ email: process.env.FB_LOGIN, password: process.env.FB_PW }, function callback(err, api) {
+login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callback(err, api) {
     if (err) return console.error(err);
 
-    api.setOptions({ listenEvents: true });
+    api.setOptions({listenEvents: true});
 
     api.listen(function (err, message) {
         if (err) return console.error(err);
@@ -48,7 +48,7 @@ login({ email: process.env.FB_LOGIN, password: process.env.FB_PW }, function cal
 
                 var params = {
                     key: process.env.API_GOOGLE,
-                    'resource': { longUrl: message.body.replace('/shorturl ', '') }
+                    'resource': {longUrl: message.body.replace('/shorturl ', '')}
                 };
 
                 urlshortener.url.insert(params, function (err, response) {
@@ -56,25 +56,27 @@ login({ email: process.env.FB_LOGIN, password: process.env.FB_PW }, function cal
                         console.log('Encountered error', err);
                     } else {
                         api.sendMessage('Short url -> ' + response.id, message.threadID);
-                        //console.log('Short url -> ' + response.id, message.threadID);
+                        console.log('Short url -> ' + response.id, message.threadID);
                     }
                 });
             } else if (message.body.includes('/search')) {
-                var options = {
-                    query: message.body.replace('/search ', ''),
-                    limit: 5,
-                    host: 'www.google.fr'
-                };
+                https.get('https://www.googleapis.com/customsearch/v1?q=' + encodeURIComponent(message.body.replace('/search ', '')) + '&cx=' + process.env.ID_SEARCH + '&num=5&key=' + process.env.API_SEARCH, function (res) {
+                    var body = '';
 
-                scraper.search(options, function (err, url) {
-                    if (err) console.log(err);
-                    var results = [];
-                    results.push(url);
+                    res.on('data', function (chunk) {
+                        body += chunk;
+                    });
 
-                    for (var i = 0; i < 5; i++) {
-                        console.log(results[i]);
-                        api.sendMessage(results[i], message.threadID);
-                    }
+                    res.on('end', function () {
+                        var googleResults = JSON.parse(body);
+                        for (var i = 0; i < googleResults.items.length; i++) {
+                            var item = googleResults.items[i];
+                            api.sendMessage(item.title.substring(0,20) + ' -> ' + item.link, message.threadID);
+                            console.log(item.title.substring(0,20) + ' -> ' + item.link);
+                        }
+                    });
+                }).on('error', function (e) {
+                    console.log("Got an error: ", e);
                 });
             } else if (message.body.includes('/t411')) {
                 var request = require('request');
@@ -129,7 +131,11 @@ login({ email: process.env.FB_LOGIN, password: process.env.FB_PW }, function cal
                         var $ = cheerio.load(body);
                         var send = $('.element').map(function (i, el) {
                             // this === el
-                            var name = '';var hour = '';var prof = '';var salle = '';var groupe = '';
+                            var name = '';
+                            var hour = '';
+                            var prof = '';
+                            var salle = '';
+                            var groupe = '';
                             if ($(this).children('b').html() != null) {
                                 name = $(this).children('b').html().replace(/  /g, "").replace(/\n/g, '').replace(/\t/g, '') + ' - ';
                             }
@@ -169,7 +175,11 @@ login({ email: process.env.FB_LOGIN, password: process.env.FB_PW }, function cal
                         var $ = cheerio.load(body);
                         var send = $('.element').map(function (i, el) {
                             // this === el
-                            var name = '';var hour = '';var prof = '';var salle = '';var groupe = '';
+                            var name = '';
+                            var hour = '';
+                            var prof = '';
+                            var salle = '';
+                            var groupe = '';
                             if ($(this).children('b').html() != null) {
                                 name = $(this).children('b').html().replace(/  /g, "").replace(/\n/g, '').replace(/\t/g, '') + ' - ';
                             }

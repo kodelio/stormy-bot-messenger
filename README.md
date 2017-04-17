@@ -3,7 +3,7 @@ Facebook Messenger Bot for personal use (thanks to https://github.com/Schmavery/
 Using https://api.ai/
 - 'Ai-bot' + 'message' (example : Ai-bot hello)
 
-Using https://github.com/thibauts/node-google-search-scraper
+Using Google Search API
 - '/search' + 'keyword' (example : /search chair)
 
 Using t411 RSS Feed :
