@@ -10,13 +10,12 @@ var cheerio = require('cheerio');
 var google = require('googleapis');
 var scraper = require('google-search-scraper');
 var FeedParser = require('feedparser');
-var request = require('request');
 var app = apiai(process.env.API_AI);
 
-login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callback(err, api) {
+login({ email: process.env.FB_LOGIN, password: process.env.FB_PW }, function callback(err, api) {
     if (err) return console.error(err);
 
-    api.setOptions({listenEvents: true});
+    api.setOptions({ listenEvents: true });
 
     api.listen(function (err, message) {
         if (err) return console.error(err);
@@ -49,7 +48,7 @@ login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callb
 
                 var params = {
                     key: process.env.API_GOOGLE,
-                    'resource': {longUrl: message.body.replace('/shortUrl ', '')}
+                    'resource': { longUrl: message.body.replace('/shortUrl ', '') }
                 };
 
                 urlshortener.url.insert(params, function (err, response) {
@@ -73,11 +72,12 @@ login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callb
                     results.push(url);
 
                     for (var i = 0; i < 5; i++) {
-						console.log(results[i]);
+                        console.log(results[i]);
                         api.sendMessage(results[i], message.threadID);
                     }
                 });
             } else if (message.body.toLowerCase().includes('/t411')) {
+                var request = require('request');
                 if (message.body.toLowerCase() === "/t411 series") {
                     var req = request('https://www.t411.ai/rss/?cat=433');
                 } else if (message.body.toLowerCase() === "/t411 animes") {
@@ -112,25 +112,24 @@ login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callb
                     var item;
 
                     while (item = stream.read()) {
-						console.log(item.title + ' : ' + item.link);
+                        console.log(item.title + ' : ' + item.link);
                         api.sendMessage(item.title + ' : ' + item.link, message.threadID);
                     }
                 });
-            }
-            else if (message.body.toLowerCase() === '/planningToday') {
+            } else if (message.body.toLowerCase() === '/planningToday') {
                 var today = moment().format('YYYYMMDD');
 
-                https.get('https://planning-ema.fr/promo/42/' + today, function(res) {
+                https.get('https://planning-ema.fr/promo/42/' + today, function (res) {
                     res.setEncoding('utf8');
                     var body = '';
-                    res.on('data', function(chunk) {
+                    res.on('data', function (chunk) {
                         body += chunk;
                     });
-                    res.on('end', function() {
+                    res.on('end', function () {
                         var $ = cheerio.load(body);
-                        var send = $('.element').map(function(i, el) {
+                        var send = $('.element').map(function (i, el) {
                             // this === el
-                            var name = ''; var hour = ''; var prof = ''; var salle = ''; var groupe = '';
+                            var name = '';var hour = '';var prof = '';var salle = '';var groupe = '';
                             if ($(this).children('b').html() != null) {
                                 name = $(this).children('b').html().replace(/  /g, "").replace(/\n/g, '').replace(/\t/g, '') + ' - ';
                             }
@@ -148,25 +147,24 @@ login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callb
                             }
                             return name + hour + prof + salle + groupe;
                         }).get().join('\n\n');
-						console.log(send);
+                        console.log(send);
                         api.sendMessage(send, message.threadID);
                     });
                 });
-            }
-            else if (message.body.toLowerCase() === '/planningDemain') {
+            } else if (message.body.toLowerCase() === '/planningDemain') {
                 var demain = moment().add(1, 'days').format('YYYYMMDD');
 
-                https.get('https://planning-ema.fr/promo/42/' + demain, function(res) {
+                https.get('https://planning-ema.fr/promo/42/' + demain, function (res) {
                     res.setEncoding('utf8');
                     var body = '';
-                    res.on('data', function(chunk) {
+                    res.on('data', function (chunk) {
                         body += chunk;
                     });
-                    res.on('end', function() {
+                    res.on('end', function () {
                         var $ = cheerio.load(body);
-                        var send = $('.element').map(function(i, el) {
+                        var send = $('.element').map(function (i, el) {
                             // this === el
-                            var name = ''; var hour = ''; var prof = ''; var salle = ''; var groupe = '';
+                            var name = '';var hour = '';var prof = '';var salle = '';var groupe = '';
                             if ($(this).children('b').html() != null) {
                                 name = $(this).children('b').html().replace(/  /g, "").replace(/\n/g, '').replace(/\t/g, '') + ' - ';
                             }
@@ -184,7 +182,7 @@ login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callb
                             }
                             return name + hour + prof + salle + groupe;
                         }).get().join('\n\n');
-						console.log(send);
+                        console.log(send);
                         api.sendMessage(send, message.threadID);
                     });
                 });
