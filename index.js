@@ -71,8 +71,10 @@ login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callb
                         var googleResults = JSON.parse(body);
                         for (var i = 0; i < googleResults.items.length; i++) {
                             var item = googleResults.items[i];
-                            api.sendMessage(item.title.substring(0,20) + ' -> ' + item.link, message.threadID);
-                            console.log(item.title.substring(0,20) + ' -> ' + item.link);
+                            setTimeout(function () {
+                                api.sendMessage(item.title.substring(0,20) + '... -> ' + item.link, message.threadID);
+                                console.log(item.title.substring(0,20) + '... -> ' + item.link);
+                            }, 700);
                         }
                     });
                 }).on('error', function (e) {
