@@ -6,11 +6,6 @@ Using https://api.ai/
 Using Google Search API
 - '/search' + 'keyword' (example : /search chair)
 
-Using t411 RSS Feed :
-- '/t411' + 'series'
-- '/t411' + 'films'
-- '/t411' + 'animes' 
-
 Using Google API URL Shortener :
 - '/shorturl' + 'link'
 
