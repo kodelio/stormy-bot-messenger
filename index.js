@@ -26,8 +26,8 @@ login({ email: process.env.FB_LOGIN, password: process.env.FB_PW }, function cal
                 api.sendMessage("Prout ...", message.threadID);
                 api.logout();
             } else if (message.body.toLowerCase() === '/help') {
-                api.sendMessage("Voici les commandes disponibles :\n\n- '@Ai-bot' + 'message' (exemple : @Ai-bot salut)\n- '/google' + 'mot clé' (exemple : /google chaise)\n- '/t411' + 'series'\n- '/t411' + 'films'\n- '/t411' + 'animes' \n- '/shortUrl' + 'lien'\n- '/planningToday'\n- '/planningDemain'", message.threadID);
-            } else if (message.body.toLowerCase().includes('@Ai-bot')) {
+                api.sendMessage("Voici les commandes disponibles :\n\n- 'Ai-bot' + 'message' (exemple : Ai-bot salut)\n- '/search' + 'mot clé' (exemple : /search chaise)\n- '/t411' + 'series'\n- '/t411' + 'films'\n- '/t411' + 'animes' \n- '/shorturl' + 'lien'\n- '/planningToday'\n- '/planningDemain'", message.threadID);
+            } else if (message.body.toLowerCase().includes('ai-bot')) {
                 var request = app.textRequest(message.body, {
                     sessionId: 'stormybot_messenger'
                 });
@@ -42,26 +42,26 @@ login({ email: process.env.FB_LOGIN, password: process.env.FB_PW }, function cal
                 });
 
                 request.end();
-            } else if (message.body.includes('/shortUrl')) {
+            } else if (message.body.includes('/shorturl')) {
                 var google = require('googleapis');
                 var urlshortener = google.urlshortener('v1');
 
                 var params = {
                     key: process.env.API_GOOGLE,
-                    'resource': { longUrl: message.body.replace('/shortUrl ', '') }
+                    'resource': { longUrl: message.body.replace('/shorturl ', '') }
                 };
 
                 urlshortener.url.insert(params, function (err, response) {
                     if (err) {
                         console.log('Encountered error', err);
                     } else {
-                        console.log('Short url -> ' + response.id, message.threadID);
                         api.sendMessage('Short url -> ' + response.id, message.threadID);
+                        //console.log('Short url -> ' + response.id, message.threadID);
                     }
                 });
-            } else if (message.body.includes('/google')) {
+            } else if (message.body.includes('/search')) {
                 var options = {
-                    query: message.body.replace('/google ', ''),
+                    query: message.body.replace('/search ', ''),
                     limit: 5,
                     host: 'www.google.fr'
                 };
@@ -82,6 +82,7 @@ login({ email: process.env.FB_LOGIN, password: process.env.FB_PW }, function cal
                     var req = request('https://www.t411.ai/rss/?cat=433');
                 } else if (message.body === "/t411 animes") {
                     var req = request('https://www.t411.ai/rss/?cat=637');
+                } else if (message.body === "/t411 films") {
                     var req = request('https://www.t411.ai/rss/?cat=631');
                 }
 
@@ -115,7 +116,7 @@ login({ email: process.env.FB_LOGIN, password: process.env.FB_PW }, function cal
                         api.sendMessage(item.title + ' : ' + item.link, message.threadID);
                     }
                 });
-            } else if (message.body.toLowerCase() === '/planningToday') {
+            } else if (message.body.toLowerCase() === '/planningtoday') {
                 var today = moment().format('YYYYMMDD');
 
                 https.get('https://planning-ema.fr/promo/42/' + today, function (res) {
@@ -147,10 +148,15 @@ login({ email: process.env.FB_LOGIN, password: process.env.FB_PW }, function cal
                             return name + hour + prof + salle + groupe;
                         }).get().join('\n\n');
                         console.log(send);
-                        api.sendMessage(send, message.threadID);
+                        if (!send) {
+                            api.sendMessage("Pas de cours aujourd'hui", message.threadID);
+                        }
+                        else {
+                            api.sendMessage(send, message.threadID);
+                        }
                     });
                 });
-            } else if (message.body.toLowerCase() === '/planningDemain') {
+            } else if (message.body.toLowerCase() === '/planningdemain') {
                 var demain = moment().add(1, 'days').format('YYYYMMDD');
 
                 https.get('https://planning-ema.fr/promo/42/' + demain, function (res) {
@@ -182,7 +188,12 @@ login({ email: process.env.FB_LOGIN, password: process.env.FB_PW }, function cal
                             return name + hour + prof + salle + groupe;
                         }).get().join('\n\n');
                         console.log(send);
-                        api.sendMessage(send, message.threadID);
+                        if (!send) {
+                            api.sendMessage("Pas de cours demain", message.threadID);
+                        }
+                        else {
+                            api.sendMessage(send, message.threadID);
+                        }
                     });
                 });
             }
