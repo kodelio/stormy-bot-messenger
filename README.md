@@ -1,4 +1,4 @@
-Facebook Messenger Bot for personal use
+Facebook Messenger Bot for personal use (thanks to https://github.com/Schmavery/facebook-chat-api)
 
 Using https://api.ai/
 - '@Ai-bot' + 'message' (example : @Ai-bot hello)
