@@ -28,7 +28,7 @@ login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callb
                 api.sendMessage("Prout ...", message.threadID);
                 api.logout();
             } else if (message.body.toLowerCase() === '/help') {
-                api.sendMessage("Voici les commandes disponibles :\n\n- '@Ai-bot' + 'message' (exemple : @Ai-bot salut)\n- '/google' + 'mot clé' (exemple : /google chaise)\n- '/t411' + 'series'\n'/t411' + 'films'\n'/t411' + 'animes' \n- '/shortUrl' + 'lien'\n- '/planningToday'\n- '/planningDemain'", message.threadID);
+                api.sendMessage("Voici les commandes disponibles :\n\n- '@Ai-bot' + 'message' (exemple : @Ai-bot salut)\n- '/google' + 'mot clé' (exemple : /google chaise)\n- '/t411' + 'series'\n- '/t411' + 'films'\n- '/t411' + 'animes' \n- '/shortUrl' + 'lien'\n- '/planningToday'\n- '/planningDemain'", message.threadID);
             } else if (message.body.toLowerCase().includes('@Ai-bot')) {
                 var request = app.textRequest(message.body, {
                     sessionId: 'stormybot_messenger'
