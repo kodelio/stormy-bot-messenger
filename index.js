@@ -187,6 +187,7 @@ login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callb
                                     console.log("ReAdd userID " + event.logMessageData.leftParticipantFbId);
 
                                     api.addUserToGroup(event.logMessageData.leftParticipantFbId, event.threadID); //ReAdd the user
+                                    api.sendMessage("Bien essayé PD !", event.threadID);
                                 }
                             }
                         });
