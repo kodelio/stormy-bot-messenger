@@ -2,23 +2,23 @@
  * Created by Laurent on 14/04/2017.
  */
 
-var login = require("facebook-chat-api");
-var apiai = require('apiai');
-var https = require('https');
-var moment = require('moment');
-var cheerio = require('cheerio');
-//var FeedParser = require('feedparser');
-var app = apiai(process.env.API_AI);
-var Settings = require('./settings');
+const login = require("facebook-chat-api");
+const apiai = require('apiai');
+const https = require('https');
+const moment = require('moment');
+const cheerio = require('cheerio');
+//const FeedParser = require('feedparser');
+const app = apiai(process.env.API_AI);
+const Settings = require('./settings');
+const request = require('request');
 
 login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callback(err, api) {
     if (err) return console.error(err);
 
     api.setOptions({listenEvents: true});
 
-    var stopListening = api.listen((err, event) => {
+    const stopListening = api.listen((err, event) => {
         if (err) return console.error(err);
-
         switch (event.type) {
             case "message":
                 api.markAsRead(event.threadID, err => {
@@ -32,7 +32,7 @@ login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callb
                         api.sendMessage("Voici les commandes disponibles :\n\n- 'Ai-bot' + 'message' (exemple : Ai-bot salut)\n- '/search' + 'mot clé' (exemple : /search chaise)\n- '/shorturl' + 'lien'\n- '/planningToday'\n- '/planningDemain'", event.threadID);
                     } else if (event.body.toLowerCase().includes('ai-bot')) {
                         console.log(event.body.toLowerCase().replace('ai-bot ', '').replace('bot ', '').replace('@', ''));
-                        var request = app.textRequest(event.body.toLowerCase().replace('ai-bot ', '').replace('bot ', '').replace('@', ''), {
+                        const request = app.textRequest(event.body.toLowerCase().replace('ai-bot ', '').replace('bot ', '').replace('@', ''), {
                             sessionId: 'stormy-messenger-bot'
                         });
                         request.on('response', response => {
@@ -44,7 +44,6 @@ login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callb
                         });
                         request.end();
                     } else if (event.body.includes('/shorturl')) {
-                        var request = require('request');
                         const options = {
                             url: `https://www.googleapis.com/urlshortener/v1/url?key=${process.env.API_GOOGLE}`,
                             method: 'POST',
@@ -54,7 +53,7 @@ login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callb
                             json: {"longUrl": event.body.replace('/shorturl ', '')}
                         };
                         request(options, (error, response, body) => {
-                            if (!error && response.statusCode == 200) {
+                            if (!error && response.statusCode === 200) {
                                 api.sendMessage(`${body.longUrl} -> ${body.id}`, event.threadID);
                                 console.log(`${body.longUrl} -> ${body.id}`);
                             }
@@ -92,19 +91,19 @@ login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callb
                                     let prof = '';
                                     let salle = '';
                                     let groupe = '';
-                                    if ($(this).children('b').html() != null) {
+                                    if ($(this).children('b').html() !== null) {
                                         name = `${$(this).children('b').html().replace(/  /g, "").replace(/\n/g, '').replace(/\t/g, '')} - `;
                                     }
-                                    if ($(this).children('i').children('span').html() != null) {
+                                    if ($(this).children('i').children('span').html() !== null) {
                                         hour = `${$(this).children('i').children('span').html().replace(/ /g, "").replace(/\n/g, '').replace(/\t/g, '')} - `;
                                     }
-                                    if ($(this).children('.teal-text').html() != null) {
+                                    if ($(this).children('.teal-text').html() !== null) {
                                         prof = `${$(this).children('.teal-text').html().replace(/\n/g, '').replace(/\t/g, '')} - `;
                                     }
-                                    if ($(this).children('.red-text').html() != null) {
+                                    if ($(this).children('.red-text').html() !== null) {
                                         salle = `${$(this).children('.red-text').html().replace(/\n/g, '').replace(/\t/g, '')} - `;
                                     }
-                                    if ($(this).children('span').html() != null) {
+                                    if ($(this).children('span').html() !== null) {
                                         groupe = $(this).children('span').html().replace(/\n/g, '').replace(/\t/g, '');
                                     }
                                     return name + hour + prof + salle + groupe;
@@ -134,19 +133,19 @@ login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callb
                                     let prof = '';
                                     let salle = '';
                                     let groupe = '';
-                                    if ($(this).children('b').html() != null) {
+                                    if ($(this).children('b').html() !== null) {
                                         name = `${$(this).children('b').html().replace(/  /g, "").replace(/\n/g, '').replace(/\t/g, '')} - `;
                                     }
-                                    if ($(this).children('i').children('span').html() != null) {
+                                    if ($(this).children('i').children('span').html() !== null) {
                                         hour = `${$(this).children('i').children('span').html().replace(/ /g, "").replace(/\n/g, '').replace(/\t/g, '')} - `;
                                     }
-                                    if ($(this).children('.teal-text').html() != null) {
+                                    if ($(this).children('.teal-text').html() !== null) {
                                         prof = `${$(this).children('.teal-text').html().replace(/\n/g, '').replace(/\t/g, '')} - `;
                                     }
-                                    if ($(this).children('.red-text').html() != null) {
+                                    if ($(this).children('.red-text').html() !== null) {
                                         salle = `${$(this).children('.red-text').html().replace(/\n/g, '').replace(/\t/g, '')} - `;
                                     }
-                                    if ($(this).children('span').html() != null) {
+                                    if ($(this).children('span').html() !== null) {
                                         groupe = $(this).children('span').html().replace(/\n/g, '').replace(/\t/g, '');
                                     }
                                     return name + hour + prof + salle + groupe;
@@ -164,11 +163,11 @@ login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callb
                 break;
             case "event":
                 console.log(event);
-                if (event.logMessageType == 'log:unsubscribe') {
+                if (event.logMessageType === 'log:unsubscribe') {
                     if (typeof event.logMessageData !== "undefined") {
                         if (Array.isArray(Settings.threads)) Settings.threads.forEach(thread => {
                             //forEach threads registered
-                            if (typeof thread.threadID !== "undefined" && thread.threadID == event.threadID) {
+                            if (typeof thread.threadID !== "undefined" && thread.threadID === event.threadID) {
                                 //Check if event thread is in the settings
                                 if (Array.isArray(thread.userIDs) && thread.userIDs.includes(event.logMessageData.leftParticipantFbId)) {
                                     //Kicked user is in the list
