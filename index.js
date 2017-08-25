@@ -29,10 +29,10 @@ login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callb
                         api.sendMessage("Au revoir ...", event.threadID);
                         return stopListening();
                     } else if (event.body.toLowerCase() === '/help') {
-                        api.sendMessage("Voici les commandes disponibles :\n\n- 'Ai-bot' + 'message' (exemple : Ai-bot salut)\n- '/search' + 'mot clé' (exemple : /search chaise)\n- '/shorturl' + 'lien'\n- '/planningToday'\n- '/planningDemain'", event.threadID);
+                        api.sendMessage("Voici les commandes disponibles :\n\n- 'Infres Bot' + 'message' (exemple : Infres salut)\n- '/search' + 'mot clé' (exemple : /search chaise)\n- '/shorturl' + 'lien'\n- '/planningToday'\n- '/planningDemain'", event.threadID);
                     } else if (event.body.toLowerCase().includes('ai-bot')) {
-                        console.log(event.body.toLowerCase().replace('ai-bot ', '').replace('bot ', '').replace('@', ''));
-                        const request = app.textRequest(event.body.toLowerCase().replace('botin ', '').replace('fres ', '').replace('bot ', '').replace('@', ''), {
+                        console.log(event.body.toLowerCase().replace('infres bot ', '').replace('bot ', '').replace('@', ''));
+                        const request = app.textRequest(event.body.toLowerCase().replace('infres bot ', '').replace('bot ', '').replace('@', ''), {
                             sessionId: 'stormy-messenger-bot'
                         });
                         request.on('response', response => {
