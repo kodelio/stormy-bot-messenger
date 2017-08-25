@@ -30,7 +30,7 @@ login({email: process.env.FB_LOGIN, password: process.env.FB_PW}, function callb
                         return stopListening();
                     } else if (event.body.toLowerCase() === '/help') {
                         api.sendMessage("Voici les commandes disponibles :\n\n- 'Infres Bot' + 'message' (exemple : Infres salut)\n- '/search' + 'mot clé' (exemple : /search chaise)\n- '/shorturl' + 'lien'\n- '/planningToday'\n- '/planningDemain'", event.threadID);
-                    } else if (event.body.toLowerCase().includes('ai-bot')) {
+                    } else if (event.body.toLowerCase().includes('infres bot')) {
                         console.log(event.body.toLowerCase().replace('infres bot ', '').replace('bot ', '').replace('@', ''));
                         const request = app.textRequest(event.body.toLowerCase().replace('infres bot ', '').replace('bot ', '').replace('@', ''), {
                             sessionId: 'stormy-messenger-bot'
